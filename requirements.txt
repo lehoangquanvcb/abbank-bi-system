@@ -1,9 +1,7 @@
+streamlit
 pandas
 openpyxl
-streamlit
 plotly
 numpy
 scikit-learn
 st-gsheets-connection
-.streamlit/
-.streamlit/secrets.toml
