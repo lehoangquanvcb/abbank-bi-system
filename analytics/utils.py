@@ -16,6 +16,18 @@ def read_sheet(sheet_name: str) -> pd.DataFrame:
     if "date" in df.columns:
         df["date"] = pd.to_datetime(df["date"], errors="coerce")
 
+    # Convert numeric columns safely
+    for col in df.columns:
+        if col != "date" and col != "bank" and col != "scenario" and col != "description":
+            df[col] = (
+                df[col]
+                .astype(str)
+                .str.replace(",", "", regex=False)
+                .str.replace("%", "", regex=False)
+                .str.strip()
+            )
+            df[col] = pd.to_numeric(df[col], errors="coerce")
+
     return df
 
 def latest_row(df: pd.DataFrame) -> pd.Series:
