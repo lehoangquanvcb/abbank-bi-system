@@ -1,15 +1,20 @@
-import streamlit as st
 import pandas as pd
-from streamlit_gsheets import GSheetsConnection
+import urllib.parse
 
-@st.cache_data(ttl=600)
+SHEET_ID = "1kdosejgGgYiUusTZNCGKXmyXP45g89rp4esZ61dri8g"
+
 def read_sheet(sheet_name: str) -> pd.DataFrame:
-    conn = st.connection("gsheets", type=GSheetsConnection)
-    df = conn.read(worksheet=sheet_name)
+    sheet_name_encoded = urllib.parse.quote(sheet_name)
+    url = (
+        f"https://docs.google.com/spreadsheets/d/{SHEET_ID}"
+        f"/gviz/tq?tqx=out:csv&sheet={sheet_name_encoded}"
+    )
+
+    df = pd.read_csv(url)
     df = df.dropna(how="all")
 
     if "date" in df.columns:
-        df["date"] = pd.to_datetime(df["date"])
+        df["date"] = pd.to_datetime(df["date"], errors="coerce")
 
     return df
 
