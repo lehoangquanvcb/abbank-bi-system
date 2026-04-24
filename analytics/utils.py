@@ -1,14 +1,16 @@
-from pathlib import Path
+import streamlit as st
 import pandas as pd
+from streamlit_gsheets import GSheetsConnection
 
-ROOT = Path(__file__).resolve().parents[1]
-WORKBOOK = ROOT / "ABBank_BI_Master_Template.xlsx"
-
+@st.cache_data(ttl=600)
 def read_sheet(sheet_name: str) -> pd.DataFrame:
-    df = pd.read_excel(WORKBOOK, sheet_name=sheet_name, engine="openpyxl", skiprows=2)
+    conn = st.connection("gsheets", type=GSheetsConnection)
+    df = conn.read(worksheet=sheet_name)
     df = df.dropna(how="all")
+
     if "date" in df.columns:
         df["date"] = pd.to_datetime(df["date"])
+
     return df
 
 def latest_row(df: pd.DataFrame) -> pd.Series:
