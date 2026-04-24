@@ -1,7 +1,5 @@
 streamlit
 pandas
-openpyxl
-plotly
 numpy
+plotly
 scikit-learn
-st-gsheets-connection
